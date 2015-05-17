@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Riot Froala Demo</title>
+  </head>
+  <body>
+    <main></main>
+    <script src="bundle.js"></script>
+    <script type="riot/tag">
+        <main>
+            <h1>Riot Froala Demo</h1>
+            <riot-froala></riot-froala>
+        </main>
+    </script>
+    <script>
+    riot.compile(function() {
+      riot.mount('*')
+    })
+    </script>
+  </body>
+</html>

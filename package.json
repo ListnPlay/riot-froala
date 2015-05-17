@@ -1,0 +1,35 @@
+{
+  "name": "riot-froala",
+  "version": "1.0.0",
+  "description": " RiotJS integration for Froala WYSIWYG html editor",
+  "main": "riot-froala.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ListnPlay/riot-froala"
+  },
+  "keywords": [
+    "riot",
+    "froala",
+    "wsysiwyg",
+    "rich",
+    "editor",
+    "html",
+    "riotjs",
+    "component"
+  ],
+  "peerDependencies": {
+    "riot": "^2.0.14"
+  }
+  "author": "Avner Peled",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ListnPlay/riot-froala/issues"
+  },
+  "scripts": {
+    "demo": "beefy demo/index.js --open -o demo/bundle.js" 
+  }
+  "homepage": "https://github.com/ListnPlay/riot-froala"
+}
