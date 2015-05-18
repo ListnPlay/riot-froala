@@ -1,4 +1,3 @@
-console.log(global.riot);
 riot.tag('riot-froala',' \
          <span>{message}</span> \
  ',
