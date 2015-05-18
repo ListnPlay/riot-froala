@@ -4,7 +4,7 @@
   "description": " RiotJS integration for Froala WYSIWYG html editor",
   "main": "riot-froala.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "demo": "beefy demo/index.js --open -o demo/bundle.js"
   },
   "repository": {
     "type": "git",
@@ -22,14 +22,17 @@
   ],
   "peerDependencies": {
     "riot": "^2.0.14"
-  }
+  },
   "author": "Avner Peled",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ListnPlay/riot-froala/issues"
   },
+  "homepage": "https://github.com/ListnPlay/riot-froala",
+  "devDependencies": {
+    "beefy": "^2.1.5"
+  },
   "scripts": {
-    "demo": "beefy demo/index.js --open -o demo/bundle.js" 
+    "demo": "./node_modules/beefy/bin/beefy demo/index.js:bundle.js --index demo/index.html --open"
   }
-  "homepage": "https://github.com/ListnPlay/riot-froala"
 }

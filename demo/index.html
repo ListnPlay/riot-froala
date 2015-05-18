@@ -6,6 +6,7 @@
   </head>
   <body>
     <main></main>
+    <script src="//cdn.jsdelivr.net/g/riot@2.0(riot.min.js+compiler.min.js)"></script>
     <script src="bundle.js"></script>
     <script type="riot/tag">
         <main>
@@ -14,9 +15,8 @@
         </main>
     </script>
     <script>
-    riot.compile(function() {
-      riot.mount('*')
-    })
+    console.log("Compiling tags");
+    riot.mount('*')
     </script>
   </body>
 </html>
