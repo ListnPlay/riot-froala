@@ -1,3 +1,4 @@
+require('riot');
 riot.tag('riot-froala',' \
          <span>{message}</span> \
  ',
