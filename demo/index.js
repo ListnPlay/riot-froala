@@ -1,1 +1,1 @@
-require('../riot-froala');
+require('../');
