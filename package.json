@@ -4,7 +4,7 @@
   "description": " RiotJS integration for Froala WYSIWYG html editor",
   "main": "index.js",
   "scripts": {
-    "demo": "beefy demo/index.js --open -o demo/bundle.js"
+    "demo": "./node_modules/beefy/bin/beefy demo/index.js:bundle.js --index demo/index.html --open"
   },
   "repository": {
     "type": "git",
@@ -31,8 +31,5 @@
   "homepage": "https://github.com/ListnPlay/riot-froala",
   "devDependencies": {
     "beefy": "^2.1.5"
-  },
-  "scripts": {
-    "demo": "./node_modules/beefy/bin/beefy demo/index.js:bundle.js --index demo/index.html --open"
   }
 }
