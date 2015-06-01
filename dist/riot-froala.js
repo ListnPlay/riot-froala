@@ -5025,19 +5025,6 @@ riot.mountTo = riot.mount
 })(typeof window != 'undefined' ? window : undefined);
 
 },{}],11:[function(require,module,exports){
-require('./lib/froala_editor.min');
-require('./lib/froala_editor.min.css');
-
-// Plugins
-require('./lib/plugins/lists.min');
-require('./lib/plugins/video.min');
-
-// Themes
-require('./lib/themes/dark.min.css');
-require('./lib/themes/gray.min.css');
-require('./lib/themes/red.min.css');
-require('./lib/themes/royal.min.css');
-
 function parseBool(string) {
     return (string == "true");
 }
@@ -5048,6 +5035,19 @@ riot.tag('riot-froala',' \
  ',
     function(opts) {
         this.init = function() {
+            require('./lib/froala_editor.min');
+            require('./lib/froala_editor.min.css');
+
+            // Plugins
+            require('./lib/plugins/lists.min');
+            require('./lib/plugins/video.min');
+
+            // Themes
+            require('./lib/themes/dark.min.css');
+            require('./lib/themes/gray.min.css');
+            require('./lib/themes/red.min.css');
+            require('./lib/themes/royal.min.css');
+
             // Options
             var options = {
                 inlineMode : opts['inline-mode'] || 'true',
