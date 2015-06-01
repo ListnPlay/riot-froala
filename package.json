@@ -31,9 +31,9 @@
   },
   "homepage": "https://github.com/ListnPlay/riot-froala",
   "devDependencies": {
-    "beefy": "^2.1.5",
-    "cssify": "^0.7.0"
+    "beefy": "^2.1.5"
   },
   "dependencies": {
+    "cssify": "^0.7.0"
   }
 }
