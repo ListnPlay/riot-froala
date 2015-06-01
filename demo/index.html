@@ -12,7 +12,19 @@
     <script type="riot/tag">
         <main>
             <h1>Riot Froala Demo</h1>
-            <riot-froala></riot-froala>
+            <riot-froala 
+                inline-mode="false"
+                width="500",
+                height="250",
+                placeholder="Describe how you feel",
+                buttons="bold, italic, formatBlock, insertUnorderedList, createLink, insertImage, insertVideo"
+            ></riot-froala>
+
+
+            this.on('mount', function() {
+                this.tags['riot-froala'].init();
+            });
+
         </main>
     </script>
     <script>
