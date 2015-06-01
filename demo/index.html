@@ -12,13 +12,21 @@
     <script type="riot/tag">
         <main>
             <h1>Riot Froala Demo</h1>
-            <riot-froala 
-                inline-mode="false"
-                width="500"
-                height="250"
-                placeholder="Describe how you feel"
-                buttons="bold, italic, formatBlock, insertUnorderedList, createLink, insertImage, insertVideo"
-            ></riot-froala>
+            <div id="container">
+                <riot-froala 
+                    inline-mode="false"
+                    height="200"
+                    placeholder="Describe how you feel"
+                    buttons="bold, italic, formatBlock, insertUnorderedList, createLink, insertImage, insertVideo"
+                ></riot-froala>
+            </div>
+
+            <style>
+                #container {
+                    width: 200px;
+                }
+            </style>
+
 
 
             this.on('mount', function() {

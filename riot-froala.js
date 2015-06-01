@@ -24,20 +24,26 @@ riot.tag('riot-froala',' \
             // Options
             var options = {
                 inlineMode : opts['inline-mode'] || 'true',
-                width : opts['width'] || '600',
-                height : opts['height'] || '200',
                 theme  : opts['theme'] || 'dark',
                 placeholder : opts['placeholder'] || 'Type something'
             }
 
             options.inlineMode = parseBool(options.inlineMode);
-            
+
+
             if (opts['shortcuts-available']) {
                 options.shortcutsAvailable  = opts['shortcuts-available'].split(",");
             }
             if (opts['buttons']) {
                 options.buttons = opts['buttons'].replace(/\s/g, "").split(',');
             }
+            if (opts['width']) {
+                options.width = opts['width'];
+            }
+            if (opts['height']) {
+                options.height = opts['height'];
+            }
+
             console.log("Options: ", options);
 
             $('#riot-froala-edit').editable(options);
