@@ -2,7 +2,7 @@
   "name": "riot-froala",
   "version": "1.0.0",
   "description": " RiotJS integration for Froala WYSIWYG html editor",
-  "main": "dist/riot-froala.js",
+  "main": "index.js",
   "scripts": {
     "demo": "./node_modules/beefy/bin/beefy demo/index.js:bundle.js --index demo/index.html --open -- -t cssify",
     "dist": "./node_modules/browserify/bin/cmd.js index.js > dist/riot-froala.js"
