@@ -4,7 +4,6 @@ function parseBool(string) {
 
 riot.tag('riot-froala',' \
      <div id="riot-froala-edit"></div> \
-     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css"> \
  ',
     function(opts) {
         this.init = function() {
@@ -25,14 +24,16 @@ riot.tag('riot-froala',' \
             var options = {
                 inlineMode : opts['inline-mode'] || 'true',
                 theme  : opts['theme'] || 'dark',
-                placeholder : opts['placeholder'] || 'Type something'
+                placeholder : opts['placeholder'] || 'Type something',
+                pargraphy: opts['pargraphy'] || 'true'
             }
 
             options.inlineMode = parseBool(options.inlineMode);
+            options.paragraphy = parseBool(options.pargraphy);
 
 
             if (opts['shortcuts-available']) {
-                options.shortcutsAvailable  = opts['shortcuts-available'].split(",");
+                options.shortcutsAvailable  = opts['shortcuts-available'].replace(/\s/g,"").split(",");
             }
             if (opts['buttons']) {
                 options.buttons = opts['buttons'].replace(/\s/g, "").split(',');
