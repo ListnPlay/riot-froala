@@ -48,6 +48,16 @@ riot.tag('riot-froala',' \
 
             $('#riot-froala-edit').editable(options);
 
+            $('#riot-froala-edit').on('editable.contentChanged', function (e, editor) {
+                if (opts['content-changed']) {
+                    opts['content-changed'](e, editor);
+                }
+            });
+
+        }
+
+        this.getHTML = function() {
+            return $('#riot-froala-edit').editable('getHTML');
         }
     }
 ); 

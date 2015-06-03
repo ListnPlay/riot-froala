@@ -18,6 +18,7 @@
                     height="200"
                     placeholder="Describe how you feel"
                     buttons="bold, italic, formatBlock, insertUnorderedList, createLink, insertImage, insertVideo"
+                    content-changed="{contentChanged}"
                 ></riot-froala>
             </div>
 
@@ -26,12 +27,23 @@
                     width: 200px;
                 }
             </style>
+            <div> 
+                {htmlContent}
+            </div>
 
+            var self = this;
 
+            this.htmlContent = "";
 
             this.on('mount', function() {
                 this.tags['riot-froala'].init();
             });
+
+            this.contentChanged = function(e, editor) {
+                console.log("Content changed!", e, editor);
+                self.htmlContent = self.tags['riot-froala'].getHTML();
+                self.update();
+            }
 
         </main>
     </script>
