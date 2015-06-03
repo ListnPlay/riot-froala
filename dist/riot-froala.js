@@ -5055,11 +5055,11 @@ riot.tag('riot-froala',' \
                 inlineMode : opts['inline-mode'] || 'true',
                 theme  : opts['theme'] || 'dark',
                 placeholder : opts['placeholder'] || 'Type something',
-                pargraphy: opts['pargraphy'] || 'true'
+                paragraphy: opts['paragraphy'] || 'true'
             }
 
             options.inlineMode = parseBool(options.inlineMode);
-            options.paragraphy = parseBool(options.pargraphy);
+            options.paragraphy = parseBool(options.paragraphy);
 
 
             if (opts['shortcuts-available']) {
