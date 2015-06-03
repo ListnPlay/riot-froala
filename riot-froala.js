@@ -38,6 +38,14 @@ riot.tag('riot-froala',' \
             if (opts['buttons']) {
                 options.buttons = opts['buttons'].replace(/\s/g, "").split(',');
             }
+            if (opts['format-tags']) {
+                options.formatTags = opts['format-tags'].replace(/\s/g, "").split(',');
+            }
+
+            if (opts['block-tags']) {
+                options.blockTags = opts['block-tags'];
+            }
+
             if (opts['width']) {
                 options.width = opts['width'];
             }
@@ -60,6 +68,11 @@ riot.tag('riot-froala',' \
         this.getHTML = function() {
             return $('#riot-froala-edit').editable('getHTML');
         }
+
+        this.setBlockTags = function(blockTags) {
+            opts['block-tags'] =  blockTags;
+        }
+
     }
 ); 
 

@@ -38,6 +38,7 @@
             this.htmlContent = "";
 
             this.on('mount', function() {
+                this.tags['riot-froala'].setBlockTags({n: 'Normal', h1: 'Title', h2: 'Header'});
                 this.tags['riot-froala'].init();
             });
 
