@@ -21,6 +21,9 @@
                     placeholder="Describe how you feel"
                     buttons="bold italic formatBlock insertUnorderedList createLink insertImage insertVideo"
                     content-changed="{contentChanged}"
+                    link-classes="{({'primary-link': 'Primary'})}"
+                    default-link-class="primary-link"
+                    block-tags="{({n: 'Normal', h1: 'Title', h2: 'Header'})}"
                 ></riot-froala>
             </div>
 
@@ -38,7 +41,6 @@
             this.htmlContent = "";
 
             this.on('mount', function() {
-                this.tags['riot-froala'].setBlockTags({n: 'Normal', h1: 'Title', h2: 'Header'});
                 this.tags['riot-froala'].init();
             });
 

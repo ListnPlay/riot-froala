@@ -5083,7 +5083,17 @@ riot.tag('riot-froala',' \
                 options.height = opts['height'];
             }
 
-            console.log("Options: ", options);
+            if (opts['link-classes']) {
+                options.linkClasses = opts['link-classes'];
+            }
+
+            $('#riot-froala-edit').on('editable.initialized', function(e, editor) {
+                if (opts['default-link-class']) {
+                    // Set a default class value and hide the combo box
+                    editor.$link_wrapper.find('input#f-luc-1').data('class', opts['default-link-class']);
+                    editor.$link_wrapper.find('input#f-luc-1').parent().addClass('fr-hidden');
+                }
+            });
 
             $('#riot-froala-edit').editable(options);
 
@@ -5092,6 +5102,7 @@ riot.tag('riot-froala',' \
                     opts['content-changed'](e, editor);
                 }
             });
+
 
         }
 
@@ -5102,7 +5113,9 @@ riot.tag('riot-froala',' \
         this.setBlockTags = function(blockTags) {
             opts['block-tags'] =  blockTags;
         }
-
+        this.setLinkClasses = function(linkClasses) {
+            opts['link-classes'] = linkClasses;
+        }
     }
 ); 
 
