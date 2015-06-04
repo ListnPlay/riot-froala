@@ -5063,13 +5063,13 @@ riot.tag('riot-froala',' \
 
 
             if (opts['shortcuts-available']) {
-                options.shortcutsAvailable  = opts['shortcuts-available'].replace(/\s/g,"").split(",");
+                options.shortcutsAvailable  = opts['shortcuts-available'].split(/\s+/);
             }
             if (opts['buttons']) {
-                options.buttons = opts['buttons'].replace(/\s/g, "").split(',');
+                options.buttons = opts['buttons'].split(/\s+/);
             }
             if (opts['format-tags']) {
-                options.formatTags = opts['format-tags'].replace(/\s/g, "").split(',');
+                options.formatTags = opts['format-tags'].split(/\s+/);
             }
 
             if (opts['block-tags']) {
