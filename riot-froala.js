@@ -57,6 +57,10 @@ riot.tag('riot-froala',' \
                 options.linkClasses = opts['link-classes'];
             }
 
+            if (opts['default-image-width']) {
+                options.defaultImageWidth = opts['default-image-width'];
+            }
+
             $('#riot-froala-edit').on('editable.initialized', function(e, editor) {
                 if (opts['default-link-class']) {
                     // Set a default class value and hide the combo box
