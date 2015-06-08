@@ -31,6 +31,8 @@ riot.tag('riot-froala',' \
             options.inlineMode = parseBool(options.inlineMode);
             options.paragraphy = parseBool(options.paragraphy);
 
+            var self = this;
+
 
             if (opts['shortcuts-available']) {
                 options.shortcutsAvailable  = opts['shortcuts-available'].split(/\s+/);
@@ -67,11 +69,17 @@ riot.tag('riot-froala',' \
                     editor.$link_wrapper.find('input#f-luc-1').data('class', opts['default-link-class']);
                     editor.$link_wrapper.find('input#f-luc-1').parent().addClass('fr-hidden');
                 }
+                if (opts['value']) {
+                    editor.setHTML(opts['value']);
+                }
             });
 
             $('#riot-froala-edit').editable(options);
 
             $('#riot-froala-edit').on('editable.contentChanged', function (e, editor) {
+                if (opts['value']) {
+                    opts['value'] = self.getHTML();
+                }
                 if (opts['content-changed']) {
                     opts['content-changed'](e, editor);
                 }
@@ -82,6 +90,10 @@ riot.tag('riot-froala',' \
 
         this.getHTML = function() {
             return $('#riot-froala-edit').editable('getHTML');
+        }
+
+        this.setHTML = function(string) {
+            $('#riot-froala-edit').editable('setHTML', string);
         }
 
         this.setBlockTags = function(blockTags) {

@@ -25,6 +25,7 @@
                     default-link-class="primary-link medium"
                     block-tags="{({n: 'Normal', h1: 'Title', h2: 'Header'})}"
                     default-image-width="0"
+                    value="{htmlContent}"
                 ></riot-froala>
             </div>
 
@@ -39,7 +40,7 @@
 
             var self = this;
 
-            this.htmlContent = "";
+            this.htmlContent = "<h1>Test title</h1><h2>Test header</h2>Blah<br><br>";
 
             this.on('mount', function() {
                 this.tags['riot-froala'].init();
