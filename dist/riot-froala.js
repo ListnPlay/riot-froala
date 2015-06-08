@@ -5120,11 +5120,17 @@ riot.tag('riot-froala',' \
         }
 
         this.getHTML = function() {
-            return $('#riot-froala-edit').editable('getHTML');
+            if ($('#riot-froala-edit').editable) {
+                return $('#riot-froala-edit').editable('getHTML');
+            } else {
+                return null;
+            }
         }
 
         this.setHTML = function(string) {
-            $('#riot-froala-edit').editable('setHTML', string);
+            if ($('#riot-froala-edit').editable) {
+                $('#riot-froala-edit').editable('setHTML', string);
+            }
         }
 
         this.setBlockTags = function(blockTags) {
