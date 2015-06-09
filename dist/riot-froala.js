@@ -5123,6 +5123,10 @@ riot.tag('riot-froala',' \
                 }
                 self.settingHTML = false;
             });
+
+            $(this.root).find('#riot-froala-edit').on('editable.focus', function (e, editor) {
+                self.settingHTML = false;
+            });
         }
 
         this.getHTML = function() {
