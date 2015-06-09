@@ -21,6 +21,7 @@
                     placeholder="Describe how you feel"
                     buttons="bold italic formatBlock insertUnorderedList createLink insertImage insertVideo"
                     content-changed="{contentChanged}"
+                    content-input="{contentInput}"
                     link-classes="{({'primary-link medium': 'Primary'})}"
                     default-link-class="primary-link medium"
                     block-tags="{({n: 'Normal', h1: 'Title', h2: 'Header'})}"
@@ -37,6 +38,7 @@
             <div> 
                 {htmlContent}
             </div>
+            <a href="" onclick="{clear}">Clear</a>
 
             var self = this;
 
@@ -50,6 +52,13 @@
                 console.log("Content changed!", e, editor);
                 self.htmlContent = self.tags['riot-froala'].getHTML();
                 self.update();
+            }
+            this.contentInput = function(e, editor) {
+                console.log("Content Input!", e, editor);
+            }
+
+            this.clear = function() {
+                console.log("Clear!", self.tags['riot-froala'].setHTML(""));            
             }
 
         </main>

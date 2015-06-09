@@ -87,9 +87,11 @@ riot.tag('riot-froala',' \
                 if (opts['content-changed']) {
                     opts['content-changed'](e, editor);
                 }
+                if (!self.settingHTML && opts['content-input']) {
+                    opts['content-input'](e, editor);
+                }
+                self.settingHTML = false;
             });
-
-
         }
 
         this.getHTML = function() {
@@ -102,6 +104,7 @@ riot.tag('riot-froala',' \
 
         this.setHTML = function(string) {
             if (self.editor) {
+                self.settingHTML = true;
                 self.editor.setHTML(string);
             }
         }
