@@ -5037,6 +5037,10 @@ riot.tag('riot-froala',' \
      <div id="riot-froala-edit"></div> \
  ',
     function(opts) {
+        this.editor = null;
+        this.initialized = false;
+        var self = this;
+
         this.init = function() {
             require('./lib/froala_editor.min');
             require('./lib/froala_editor.min.css');
@@ -5061,9 +5065,6 @@ riot.tag('riot-froala',' \
 
             options.inlineMode = parseBool(options.inlineMode);
             options.paragraphy = parseBool(options.paragraphy);
-
-            var self = this;
-
 
             if (opts['shortcuts-available']) {
                 options.shortcutsAvailable  = opts['shortcuts-available'].split(/\s+/);
@@ -5094,7 +5095,10 @@ riot.tag('riot-froala',' \
                 options.defaultImageWidth = opts['default-image-width'];
             }
 
-            $('#riot-froala-edit').on('editable.initialized', function(e, editor) {
+            $(this.root).find('#riot-froala-edit').on('editable.initialized', function(e, editor) {
+                self.editor = editor;
+                self.initialized = true;
+
                 if (opts['default-link-class']) {
                     // Set a default class value and hide the combo box
                     editor.$link_wrapper.find('input#f-luc-1').data('class', opts['default-link-class']);
@@ -5105,9 +5109,9 @@ riot.tag('riot-froala',' \
                 }
             });
 
-            $('#riot-froala-edit').editable(options);
+            $(this.root).find('#riot-froala-edit').editable(options);
 
-            $('#riot-froala-edit').on('editable.contentChanged', function (e, editor) {
+            $(this.root).find('#riot-froala-edit').on('editable.contentChanged', function (e, editor) {
                 if (opts['value']) {
                     opts['value'] = self.getHTML();
                 }
@@ -5120,16 +5124,16 @@ riot.tag('riot-froala',' \
         }
 
         this.getHTML = function() {
-            if ($('#riot-froala-edit').editable) {
-                return $('#riot-froala-edit').editable('getHTML');
+            if (self.editor) {
+                return self.editor.getHTML();
             } else {
                 return null;
             }
         }
 
         this.setHTML = function(string) {
-            if ($('#riot-froala-edit').editable) {
-                $('#riot-froala-edit').editable('setHTML', string);
+            if (self.editor) {
+                self.editor.setHTML(string);
             }
         }
 
