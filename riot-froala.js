@@ -93,7 +93,7 @@ riot.tag('riot-froala',' \
                 self.settingHTML = false;
             });
 
-            $(this.root).find('#riot-froala-edit').on('editable.imageDeleteSuccess', function (e, editor) {
+            $(this.root).find('#riot-froala-edit').on('editable.afterRemoveImage', function (e, editor) {
                 if (opts['content-changed']) {
                     opts['content-changed'](e, editor);
                 }
