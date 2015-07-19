@@ -34,7 +34,12 @@
     "beefy": "^2.1.5"
   },
   "dependencies": {
+    "browserify": "^11.0.0",
     "cssify": "^0.7.0"
   },
-  "browserify": { "transform": [ "cssify"]  }
+  "browserify": {
+    "transform": [
+      "cssify"
+    ]
+  }
 }

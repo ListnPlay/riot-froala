@@ -93,6 +93,16 @@ riot.tag('riot-froala',' \
                 self.settingHTML = false;
             });
 
+            $(this.root).find('#riot-froala-edit').on('editable.imageDeleteSuccess', function (e, editor) {
+                if (opts['content-changed']) {
+                    opts['content-changed'](e, editor);
+                }
+                if (opts['content-input']) {
+                    opts['content-input'](e, editor);
+                }
+            });
+
+
             $(this.root).find('#riot-froala-edit').on('editable.focus', function (e, editor) {
                 self.settingHTML = false;
             });
