@@ -28,13 +28,16 @@ riot.tag('riot-froala',' \
             var options = {
                 inlineMode : opts['inline-mode'] || 'true',
                 theme  : opts['theme'] || 'dark',
-                key: '2prymoiyC2xr==',
                 placeholder : opts['placeholder'] || 'Type something',
                 paragraphy: opts['paragraphy'] || 'true'
             }
 
             options.inlineMode = parseBool(options.inlineMode);
             options.paragraphy = parseBool(options.paragraphy);
+
+            if (opts['key']) {
+                options.key  = opts['key']
+            }
 
             if (opts['shortcuts-available']) {
                 options.shortcutsAvailable  = opts['shortcuts-available'].split(/\s+/);
