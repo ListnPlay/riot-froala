@@ -28,6 +28,7 @@ riot.tag('riot-froala',' \
             var options = {
                 inlineMode : opts['inline-mode'] || 'true',
                 theme  : opts['theme'] || 'dark',
+                key: '2prymoiyC2xr==',
                 placeholder : opts['placeholder'] || 'Type something',
                 paragraphy: opts['paragraphy'] || 'true'
             }
