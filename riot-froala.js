@@ -127,6 +127,12 @@ riot.tag('riot-froala',' \
             }
         }
 
+        this.getTextContentLength = function() {
+            var el = document.createElement("div");
+            el.innerHTML = self.getHTML();
+            return el.textContent.length;
+        }
+
         this.setBlockTags = function(blockTags) {
             opts['block-tags'] =  blockTags;
         }
