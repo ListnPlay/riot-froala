@@ -9,6 +9,7 @@ riot.tag('riot-froala',' \
         this.editor = null;
         this.initialized = false;
         var self = this;
+        var useRelativeImageWidth = false;
 
         this.init = function() {
             require('./lib/froala_editor.min');
@@ -68,6 +69,10 @@ riot.tag('riot-froala',' \
                 options.defaultImageWidth = opts['default-image-width'];
             }
 
+            if (opts['use-relative-image-width'] && opts['use-relative-image-width'].toLowerCase() == 'true') {
+                useRelativeImageWidth = true;
+            }
+
             $(this.root).find('#riot-froala-edit').on('editable.initialized', function(e, editor) {
                 self.editor = editor;
                 self.initialized = true;
@@ -106,6 +111,14 @@ riot.tag('riot-froala',' \
                 }
             });
 
+            $(this.root).find('#riot-froala-edit').on('editable.image.resizeEnd', function (e, editor) {
+                if (opts['content-changed']) {
+                    opts['content-changed'](e, editor);
+                }
+                if (opts['content-input']) {
+                    opts['content-input'](e, editor);
+                }
+            });
 
             $(this.root).find('#riot-froala-edit').on('editable.focus', function (e, editor) {
                 self.settingHTML = false;
@@ -114,7 +127,30 @@ riot.tag('riot-froala',' \
 
         this.getHTML = function() {
             if (self.editor) {
-                return self.editor.getHTML();
+                var editorHTML = self.editor.getHTML();
+                if (useRelativeImageWidth) {
+                    // parse html into an actual element
+                    var containerWidth = $(this.root).find('#riot-froala-edit .froala-view').width()
+
+                    var virtualFroalaContentDiv = $('<div />').html(editorHTML);
+                    var virtualFroalaContentImageElements = virtualFroalaContentDiv.find('img');
+
+                    // parse images and replace absolute width with relative
+                    virtualFroalaContentImageElements.each(function() {
+                        var absoluteWidthValue = $(this).attr('width');
+
+                        if (typeof absoluteWidthValue !== typeof undefined && absoluteWidthValue !== false) {
+
+                            if (!absoluteWidthValue.endsWith('%')) {
+                                var relativeWidthValue = Math.round((absoluteWidthValue / containerWidth) * 100) + '%';
+                                $(this).attr('width', relativeWidthValue);
+                            }
+                        }
+                    });
+
+                    editorHTML = virtualFroalaContentDiv.html();
+                }
+                return editorHTML;
             } else {
                 return null;
             }
