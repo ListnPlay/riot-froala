@@ -12,46 +12,50 @@ riot.tag('riot-froala',' \
         var useRelativeImageWidth = false;
 
         this.init = function() {
-            require('./lib/froala_editor.min');
-            require('./lib/froala_editor.min.css');
+            var $ = require('jquery');
+
+            require('./lib/js/froala_editor.min')($);
+            require('./lib/css/froala_editor.min.css');
 
             // Plugins
-            require('./lib/plugins/lists.min');
-            require('./lib/plugins/video.min');
+            require('./lib/js/plugins/lists.min')($);
+            require('./lib/js/plugins/video.min')($);
+            require('./lib/js/plugins/image.min')($);
+            require('./lib/js/plugins/link.min')($);
+            require('./lib/js/plugins/paragraph_format.min')($);
+            require('./lib/css/plugins/file.min.css');
+            require('./lib/css/plugins/image.min.css');
+            require('./lib/css/plugins/video.min.css');
 
             // Themes
-            require('./lib/themes/dark.min.css');
-            require('./lib/themes/gray.min.css');
-            require('./lib/themes/red.min.css');
-            require('./lib/themes/royal.min.css');
+            require('./lib/css/themes/dark.min.css');
+            require('./lib/css/themes/gray.min.css');
+            require('./lib/css/themes/red.min.css');
+            require('./lib/css/themes/royal.min.css');
 
             // Options
             var options = {
-                inlineMode : opts['inline-mode'] || 'true',
+                toolbarInline : opts['inline-mode'] || 'true',
                 theme  : opts['theme'] || 'dark',
-                placeholder : opts['placeholder'] || 'Type something',
-                paragraphy: opts['paragraphy'] || 'true'
+                placeholderText : opts['placeholder'] || 'Type something',
+                enter: opts['paragraphy'] || 'true'
             }
 
-            options.inlineMode = parseBool(options.inlineMode);
-            options.paragraphy = parseBool(options.paragraphy);
+            options.toolbarInline = parseBool(options.toolbarInline);
+            options.enter = parseBool(options.enter);
 
             if (opts['key']) {
                 options.key  = opts['key']
             }
 
             if (opts['shortcuts-available']) {
-                options.shortcutsAvailable  = opts['shortcuts-available'].split(/\s+/);
+                options.shortcutsEnabled  = opts['shortcuts-available'].split(/\s+/);
             }
             if (opts['buttons']) {
-                options.buttons = opts['buttons'].split(/\s+/);
+                options.toolbarButtonsXS = options.toolbarButtonsSM = options.toolbarButtonsMD = options.toolbarButtons = opts['buttons'].split(/\s+/);
             }
-            if (opts['format-tags']) {
-                options.formatTags = opts['format-tags'].split(/\s+/);
-            }
-
             if (opts['block-tags']) {
-                options.blockTags = opts['block-tags'];
+                options.paragraphFormat = opts['block-tags'];
             }
 
             if (opts['width']) {
@@ -66,30 +70,30 @@ riot.tag('riot-froala',' \
             }
 
             if (opts['default-image-width']) {
-                options.defaultImageWidth = opts['default-image-width'];
+                options.imageDefaultWidth = opts['default-image-width'];
             }
 
             if (opts['use-relative-image-width'] && opts['use-relative-image-width'].toLowerCase() == 'true') {
                 useRelativeImageWidth = true;
             }
 
-            $(this.root).find('#riot-froala-edit').on('editable.initialized', function(e, editor) {
+            $(this.root).find('#riot-froala-edit').on('froalaEditor.initialized', function(e, editor) {
                 self.editor = editor;
                 self.initialized = true;
 
                 if (opts['default-link-class']) {
                     // Set a default class value and hide the combo box
-                    editor.$link_wrapper.find('input#f-luc-1').data('class', opts['default-link-class']);
-                    editor.$link_wrapper.find('input#f-luc-1').parent().addClass('fr-hidden');
+                    //@todo: editor.$link_wrapper.find('input#f-luc-1').data('class', opts['default-link-class']);
+                    //@todo: editor.$link_wrapper.find('input#f-luc-1').parent().addClass('fr-hidden');
                 }
                 if (opts['value']) {
-                    editor.setHTML(opts['value']);
+                    editor.html.set(opts['value']);
                 }
             });
 
-            $(this.root).find('#riot-froala-edit').editable(options);
+            $(this.root).find('#riot-froala-edit').froalaEditor(options);
 
-            $(this.root).find('#riot-froala-edit').on('editable.contentChanged', function (e, editor) {
+            $(this.root).find('#riot-froala-edit').on('froalaEditor.contentChanged', function (e, editor) {
                 if (opts['value']) {
                     opts['value'] = self.getHTML();
                 }
@@ -102,7 +106,7 @@ riot.tag('riot-froala',' \
                 self.settingHTML = false;
             });
 
-            $(this.root).find('#riot-froala-edit').on('editable.afterRemoveImage', function (e, editor) {
+            $(this.root).find('#riot-froala-edit').on('froalaEditor.afterRemoveImage', function (e, editor) {
                 if (opts['content-changed']) {
                     opts['content-changed'](e, editor);
                 }
@@ -111,7 +115,7 @@ riot.tag('riot-froala',' \
                 }
             });
 
-            $(this.root).find('#riot-froala-edit').on('editable.image.resizeEnd', function (e, editor) {
+            $(this.root).find('#riot-froala-edit').on('froalaEditor.image.resizeEnd', function (e, editor) {
                 if (opts['content-changed']) {
                     opts['content-changed'](e, editor);
                 }
@@ -120,14 +124,14 @@ riot.tag('riot-froala',' \
                 }
             });
 
-            $(this.root).find('#riot-froala-edit').on('editable.focus', function (e, editor) {
+            $(this.root).find('#riot-froala-edit').on('froalaEditor.focus', function (e, editor) {
                 self.settingHTML = false;
             });
         }
 
         this.getHTML = function() {
             if (self.editor) {
-                var editorHTML = self.editor.getHTML();
+                var editorHTML = self.editor.html.get();
                 if (useRelativeImageWidth) {
                     // parse html into an actual element
                     var containerWidth = $(this.root).find('#riot-froala-edit .froala-view').width()
@@ -159,7 +163,7 @@ riot.tag('riot-froala',' \
         this.setHTML = function(string) {
             if (self.editor) {
                 self.settingHTML = true;
-                self.editor.setHTML(string);
+                self.editor.html.set(string);
             }
         }
 
