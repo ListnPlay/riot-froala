@@ -66,7 +66,7 @@ riot.tag('riot-froala',' \
             }
 
             if (opts['link-classes']) {
-                options.linkClasses = opts['link-classes'];
+                options.linkStyles = opts['link-classes'];
             }
 
             if (opts['default-image-width']) {
@@ -77,14 +77,17 @@ riot.tag('riot-froala',' \
                 useRelativeImageWidth = true;
             }
 
+            console.log('*** linkStyles = ', options.linkStyles);
+
             $(this.root).find('#riot-froala-edit').on('froalaEditor.initialized', function(e, editor) {
                 self.editor = editor;
                 self.initialized = true;
 
                 if (opts['default-link-class']) {
                     // Set a default class value and hide the combo box
-                    //@todo: editor.$link_wrapper.find('input#f-luc-1').data('class', opts['default-link-class']);
-                    //@todo: editor.$link_wrapper.find('input#f-luc-1').parent().addClass('fr-hidden');
+
+                    // the following doesn't work because the buttons popup is only created/added to the DOM after the first time it's displayed, and not once the editor is initialized
+                    //$('.fr-popup .fr-buttons button.fr-command.fr-btn.fr-dropdown i.fa-magic').parent().addClass('fr-hidden');
                 }
                 if (opts['value']) {
                     editor.html.set(opts['value']);
@@ -132,15 +135,16 @@ riot.tag('riot-froala',' \
         this.getHTML = function() {
             if (self.editor) {
                 var editorHTML = self.editor.html.get();
+                var virtualFroalaContentDiv = $('<div />').html(editorHTML);
+
                 if (useRelativeImageWidth) {
                     // parse html into an actual element
                     var containerWidth = $(this.root).find('#riot-froala-edit .froala-view').width()
 
-                    var virtualFroalaContentDiv = $('<div />').html(editorHTML);
                     var virtualFroalaContentImageElements = virtualFroalaContentDiv.find('img');
 
                     // parse images and replace absolute width with relative
-                    virtualFroalaContentImageElements.each(function() {
+                    virtualFroalaContentImageElements.each(function () {
                         var absoluteWidthValue = $(this).attr('width');
 
                         if (typeof absoluteWidthValue !== typeof undefined && absoluteWidthValue !== false) {
@@ -151,9 +155,18 @@ riot.tag('riot-froala',' \
                             }
                         }
                     });
-
-                    editorHTML = virtualFroalaContentDiv.html();
                 }
+
+                if (opts['default-link-class']) {
+                    var virtualFroalaContentHrefElements = virtualFroalaContentDiv.find('a');
+
+                    // parse anchor tags and add default style
+                    virtualFroalaContentHrefElements.each(function() {
+                        $(this).addClass(opts['default-link-class']);
+                    });
+                }
+
+                editorHTML = virtualFroalaContentDiv.html();
                 return editorHTML;
             } else {
                 return null;
