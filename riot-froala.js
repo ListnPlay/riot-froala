@@ -78,18 +78,20 @@ riot.tag('riot-froala',' \
                 }
             }
 
+            if (opts['image-upload-to-s3-details']) {
+                options.imageUploadToS3 = opts['image-upload-to-s3-details'];
+            }
+
             if (opts['use-relative-image-width'] && opts['use-relative-image-width'].toLowerCase() == 'true') {
                 useRelativeImageWidth = true;
             }
-
-            console.log('*** linkStyles = ', options.linkStyles);
 
             $(this.root).find('#riot-froala-edit').on('froalaEditor.initialized', function(e, editor) {
                 self.editor = editor;
                 self.initialized = true;
 
                 if (opts['default-link-class']) {
-                    // Set a default class value and hide the combo box
+                    // todo: hide style selection button in the link popup
 
                     // the following doesn't work because the buttons popup is only created/added to the DOM after the first time it's displayed, and not once the editor is initialized
                     //$('.fr-popup .fr-buttons button.fr-command.fr-btn.fr-dropdown i.fa-magic').parent().addClass('fr-hidden');
@@ -134,6 +136,12 @@ riot.tag('riot-froala',' \
 
             $(this.root).find('#riot-froala-edit').on('froalaEditor.focus', function (e, editor) {
                 self.settingHTML = false;
+            });
+
+            $(this.root).find('#riot-froala-edit').on('froalaEditor.image.beforeUpload', function (e, editor, images) {
+                if (opts['before-upload-image']) {
+                    opts['before-upload-image'](e, editor, images);
+                }
             });
         }
 
@@ -196,6 +204,63 @@ riot.tag('riot-froala',' \
         }
         this.setLinkClasses = function(linkClasses) {
             opts['link-classes'] = linkClasses;
+        }
+
+        this.setImageUploadToS3Details = function(imageUploadToS3Details) {
+
+            /*
+            -- required structure for parameter:
+            {
+                 bucket: 'your_bucket_name',
+                 region: 's3',  // or your bucket region
+                 keyStart: 'prefix_to_assign_to_uploaded_files/',
+                 callback: function (url, key) {
+                     // The URL and Key returned from Amazon.
+                     console.log ('*** url = ', url);
+                     console.log ('*** key = ', key);
+                 },
+                 params: {
+                     acl: 'public-read',    // or your required ACL
+                     AWSAccessKeyId: 'your_AWS_Access_Key_ID'
+                     policy: s3Policy,   // see explanation further down
+                     signature: s3Signature   // see explanation further down
+                 }
+             }
+
+             -- the last two parameters should be constructed in the backend, which can be done like so:
+             function generateS3PolicySignatureForFroala() {
+                 let expiration = moment.utc(moment().add(2, 'days')).toISOString();    // set expiration 2 days ahead
+
+                 // build policy object, according to AWS documentation
+                 let s3Policy = {
+                     "expiration": expiration,
+                     "conditions": [
+                         ["starts-with", "$key", consts.AWS_EDITOR_IMAGES_PREFIX],
+                         {"bucket": envUtil.get('AWS_IMAGES_BUCKET_NAME')},
+                         {"acl": "public-read"},
+                         ["starts-with", "$Content-Type", ''],
+                         {"success_action_status": "201"},
+                         {"x-requested-with": "xhr"}
+                     ]
+                 };
+
+                 // stringify and encode the policy
+                 let stringPolicy = JSON.stringify(s3Policy);
+                 let base64Policy = Buffer(stringPolicy, "utf-8").toString("base64");
+
+                 // sign the base64 encoded policy
+                 let signature = crypto.createHmac("sha1", envUtil.get('AWS_SECRET_KEY'))
+                     .update(new Buffer(base64Policy, "utf-8"))
+                     .digest("base64");
+
+                 let s3Credentials = {
+                     s3Policy: base64Policy,
+                     s3Signature: signature
+                 };
+             }
+             */
+
+            opts['image-upload-to-s3-details'] = imageUploadToS3Details;
         }
     }
 ); 
