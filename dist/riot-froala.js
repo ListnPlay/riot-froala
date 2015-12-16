@@ -10777,11 +10777,13 @@ riot.tag('riot-froala',' \
                 options.imageDefaultWidth = opts['default-image-width'];
             }
 
+            if (opts['image-upload-to-s3-details']) {
+                options.imageUploadToS3 = opts['image-upload-to-s3-details'];
+            }
+
             if (opts['use-relative-image-width'] && opts['use-relative-image-width'].toLowerCase() == 'true') {
                 useRelativeImageWidth = true;
             }
-
-            console.log('*** linkStyles = ', options.linkStyles);
 
             $(this.root).find('#riot-froala-edit').on('froalaEditor.initialized', function(e, editor) {
                 self.editor = editor;
@@ -10828,6 +10830,12 @@ riot.tag('riot-froala',' \
                 }
                 if (opts['content-input']) {
                     opts['content-input'](e, editor);
+                }
+            });
+
+            $(this.root).find('#riot-froala-edit').on('froalaEditor.image.beforeUpload', function (e, editor, images) {
+                if (opts['before-upload-image']) {
+                    opts['before-upload-image'](e, editor, images);
                 }
             });
 
@@ -10895,6 +10903,35 @@ riot.tag('riot-froala',' \
         }
         this.setLinkClasses = function(linkClasses) {
             opts['link-classes'] = linkClasses;
+        }
+
+        this.setImageUploadToS3Details = function(imageUploadToS3Details) {
+
+            /*
+
+             $('.selector').froalaEditor({
+             imageUploadToS3: {
+             bucket: 'editor',
+             // Your bucket region.
+             region: 'us-east-1',
+             keyStart: 'uploads/',
+             callback: function (url, key) {
+             // The URL and Key returned from Amazon.
+             console.log (url);
+             console.log (key);
+             },
+             params: {
+             acl: 'public-read', // ACL according to Amazon Documentation.
+             AWSAccessKeyId: 'ACCESS_KEY', // Access Key from Amazon.
+             policy: 'POLICY_STRING', // Policy string computed in the backend.
+             signature: '', // Signature computed in the backend.
+             }
+             }
+             });
+
+             */
+
+            opts['image-upload-to-s3-details'] = imageUploadToS3Details;
         }
     }
 ); 
