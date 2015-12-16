@@ -70,7 +70,12 @@ riot.tag('riot-froala',' \
             }
 
             if (opts['default-image-width']) {
-                options.imageDefaultWidth = opts['default-image-width'];
+                if (opts['default-image-width'] == '0') {
+                    options.imageDefaultWidth = 0;  // must be integer, '0' displays all images as 0px, instead of using the actual image width
+                }
+                else {
+                    options.imageDefaultWidth = opts['default-image-width'];
+                }
             }
 
             if (opts['use-relative-image-width'] && opts['use-relative-image-width'].toLowerCase() == 'true') {
