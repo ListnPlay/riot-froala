@@ -152,19 +152,19 @@ riot.tag('riot-froala',' \
 
                 if (useRelativeImageWidth) {
                     // parse html into an actual element
-                    var containerWidth = $(this.root).find('#riot-froala-edit .froala-view').width()
+                    var containerWidth = $(this.root).find('#riot-froala-edit .fr-element.fr-view').width()
 
                     var virtualFroalaContentImageElements = virtualFroalaContentDiv.find('img');
 
                     // parse images and replace absolute width with relative
                     virtualFroalaContentImageElements.each(function () {
-                        var absoluteWidthValue = $(this).attr('width');
+                        var absoluteWidthValue = $(this).width();
 
-                        if (typeof absoluteWidthValue !== typeof undefined && absoluteWidthValue !== false) {
+                        if (typeof absoluteWidthValue !== typeof undefined && absoluteWidthValue !== false && absoluteWidthValue !== 0) {
 
-                            if (!absoluteWidthValue.endsWith('%')) {
+                            if (!absoluteWidthValue.toString().endsWith('%')) {
                                 var relativeWidthValue = Math.round((absoluteWidthValue / containerWidth) * 100) + '%';
-                                $(this).attr('width', relativeWidthValue);
+                                $(this).width(relativeWidthValue);
                             }
                         }
                     });
