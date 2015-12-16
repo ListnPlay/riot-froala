@@ -9,6 +9,7 @@
     <main></main>
     <script src="//cdn.jsdelivr.net/g/riot@2.1(riot.min.js+compiler.min.js)"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha1.js"></script>
     <script src="bundle.js"></script>
 
     <!--script src="../lib/plugins/paragraph_format.min.js"></script-->
@@ -25,9 +26,11 @@
                     buttons="bold italic paragraphFormat formatUL insertLink insertImage insertVideo"
                     content-changed="{contentChanged}"
                     content-input="{contentInput}"
+                    before-upload-image="{beforeUploadImage}"
                     link-classes="{({'primary-link medium': 'Primary'})}"
                     default-link-class="primary-link medium"
                     block-tags="{({n: 'Normal', h1: 'Title', h2: 'Header'})}"
+                    image-upload-to-s3-details="{uploadImageToS3Details}"
                     default-image-width="0"
                     value="{htmlContent}"
                 ></riot-froala>
@@ -58,6 +61,52 @@
             }
             this.contentInput = function(e, editor) {
                 console.log("Content Input!", e, editor);
+            }
+
+            var dateTomorrow = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);    // add 24 hours to current time
+
+            var awsPolicyStruct =
+                { "expiration": dateTomorrow.toISOString(), // ISO 8601 - date('c'); generates uncompatible date, so better do it manually??? date('Y-m-d\TH:i:s.000\Z', strtotime('+1 day'))
+                    "conditions": [
+                        {"bucket": "images.test.feature.fm" },
+                        {"acl": "public-read" },
+                        {"success_action_status": "201" },
+                        {"x-requested-with": "xhr" },
+                        ["starts-with", "$key", "editor-uploads/"],
+                        ["starts-with", "$Content-Type", ""]    // accept all files
+                    ]
+                }
+
+            var awsPolicyString = JSON.stringify(awsPolicyStruct);
+            //serverside: var awsPolicyBase64Encoded = new Buffer(awsPolicyString).toString('base64');
+            var awsPolicyBase64Encoded = window.btoa(awsPolicyString); // clientside - encode a string to base64
+
+            //serverside: var crypto = require('crypto');
+            //serverside: var awsSignatureString = crypto.createHmac('sha1', 'z2GQcXeAksulWkFxdWRmEyt++yDGhkrxX12KMEdn').update(awsPolicyBase64Encoded).digest('hex');   // secret kept on server, so signature must be returned from backend
+            //serverside: var awsSignatureBase64Encoded = new Buffer(awsSignatureString).toString('base64');
+            var awsSignatureString = CryptoJS.HmacSHA1(awsPolicyBase64Encoded, 'z2GQcXeAksulWkFxdWRmEyt++yDGhkrxX12KMEdn');
+            var awsSignatureBase64Encoded = window.btoa(awsSignatureString);    // clientside - encode a string to base64
+
+            this.uploadImageToS3Details = {
+                     bucket: 'images.test.feature.fm',
+                     region: 's3',
+                     keyStart: 'editor-uploads/',
+                     callback: function (url, key) {
+                         // The URL and Key returned from Amazon.
+                         console.log ('url = ', url);
+                         console.log ('key = ', key);
+                     },
+                     params: {
+                         acl: 'public-read', // ACL according to Amazon Documentation.
+                         AWSAccessKeyId: 'AKIAICDD6PHXLPMXDOUA', // Access Key from Amazon. //AWS_ACCESS_KEY_ID
+                         policy: awsPolicyBase64Encoded, // Policy string computed in the backend.
+                         signature: awsSignatureBase64Encoded, // Signature computed in the backend.
+                     }
+                 };
+
+            this.beforeUploadImage = function(e, editor, images) {
+                console.log("before upload image, images = ", images);
+                self.tags['riot-froala'].setImageUploadToS3Details(self.uploadImageToS3Details);
             }
 
             this.clear = function() {
