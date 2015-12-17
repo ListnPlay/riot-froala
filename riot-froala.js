@@ -12,46 +12,50 @@ riot.tag('riot-froala',' \
         var useRelativeImageWidth = false;
 
         this.init = function() {
-            require('./lib/froala_editor.min');
-            require('./lib/froala_editor.min.css');
+            var $ = require('jquery');
+
+            require('./lib/js/froala_editor.min')($);
+            require('./lib/css/froala_editor.min.css');
 
             // Plugins
-            require('./lib/plugins/lists.min');
-            require('./lib/plugins/video.min');
+            require('./lib/js/plugins/lists.min')($);
+            require('./lib/js/plugins/video.min')($);
+            require('./lib/js/plugins/image.min')($);
+            require('./lib/js/plugins/link.min')($);
+            require('./lib/js/plugins/paragraph_format.min')($);
+            require('./lib/css/plugins/file.min.css');
+            require('./lib/css/plugins/image.min.css');
+            require('./lib/css/plugins/video.min.css');
 
             // Themes
-            require('./lib/themes/dark.min.css');
-            require('./lib/themes/gray.min.css');
-            require('./lib/themes/red.min.css');
-            require('./lib/themes/royal.min.css');
+            require('./lib/css/themes/dark.min.css');
+            require('./lib/css/themes/gray.min.css');
+            require('./lib/css/themes/red.min.css');
+            require('./lib/css/themes/royal.min.css');
 
             // Options
             var options = {
-                inlineMode : opts['inline-mode'] || 'true',
+                toolbarInline : opts['inline-mode'] || 'true',
                 theme  : opts['theme'] || 'dark',
-                placeholder : opts['placeholder'] || 'Type something',
-                paragraphy: opts['paragraphy'] || 'true'
+                placeholderText : opts['placeholder'] || 'Type something',
+                enter: opts['paragraphy'] || 'true'
             }
 
-            options.inlineMode = parseBool(options.inlineMode);
-            options.paragraphy = parseBool(options.paragraphy);
+            options.toolbarInline = parseBool(options.toolbarInline);
+            options.enter = parseBool(options.enter);
 
             if (opts['key']) {
                 options.key  = opts['key']
             }
 
             if (opts['shortcuts-available']) {
-                options.shortcutsAvailable  = opts['shortcuts-available'].split(/\s+/);
+                options.shortcutsEnabled  = opts['shortcuts-available'].split(/\s+/);
             }
             if (opts['buttons']) {
-                options.buttons = opts['buttons'].split(/\s+/);
+                options.toolbarButtonsXS = options.toolbarButtonsSM = options.toolbarButtonsMD = options.toolbarButtons = opts['buttons'].split(/\s+/);
             }
-            if (opts['format-tags']) {
-                options.formatTags = opts['format-tags'].split(/\s+/);
-            }
-
             if (opts['block-tags']) {
-                options.blockTags = opts['block-tags'];
+                options.paragraphFormat = opts['block-tags'];
             }
 
             if (opts['width']) {
@@ -62,34 +66,44 @@ riot.tag('riot-froala',' \
             }
 
             if (opts['link-classes']) {
-                options.linkClasses = opts['link-classes'];
+                options.linkStyles = opts['link-classes'];
             }
 
             if (opts['default-image-width']) {
-                options.defaultImageWidth = opts['default-image-width'];
+                if (opts['default-image-width'] == '0') {
+                    options.imageDefaultWidth = 0;  // must be integer, '0' displays all images as 0px, instead of using the actual image width
+                }
+                else {
+                    options.imageDefaultWidth = opts['default-image-width'];
+                }
+            }
+
+            if (opts['image-upload-to-s3-details']) {
+                options.imageUploadToS3 = opts['image-upload-to-s3-details'];
             }
 
             if (opts['use-relative-image-width'] && opts['use-relative-image-width'].toLowerCase() == 'true') {
                 useRelativeImageWidth = true;
             }
 
-            $(this.root).find('#riot-froala-edit').on('editable.initialized', function(e, editor) {
+            $(this.root).find('#riot-froala-edit').on('froalaEditor.initialized', function(e, editor) {
                 self.editor = editor;
                 self.initialized = true;
 
                 if (opts['default-link-class']) {
-                    // Set a default class value and hide the combo box
-                    editor.$link_wrapper.find('input#f-luc-1').data('class', opts['default-link-class']);
-                    editor.$link_wrapper.find('input#f-luc-1').parent().addClass('fr-hidden');
+                    // todo: hide style selection button in the link popup
+
+                    // the following doesn't work because the buttons popup is only created/added to the DOM after the first time it's displayed, and not once the editor is initialized
+                    //$('.fr-popup .fr-buttons button.fr-command.fr-btn.fr-dropdown i.fa-magic').parent().addClass('fr-hidden');
                 }
                 if (opts['value']) {
-                    editor.setHTML(opts['value']);
+                    editor.html.set(opts['value']);
                 }
             });
 
-            $(this.root).find('#riot-froala-edit').editable(options);
+            $(this.root).find('#riot-froala-edit').froalaEditor(options);
 
-            $(this.root).find('#riot-froala-edit').on('editable.contentChanged', function (e, editor) {
+            $(this.root).find('#riot-froala-edit').on('froalaEditor.contentChanged', function (e, editor) {
                 if (opts['value']) {
                     opts['value'] = self.getHTML();
                 }
@@ -102,7 +116,7 @@ riot.tag('riot-froala',' \
                 self.settingHTML = false;
             });
 
-            $(this.root).find('#riot-froala-edit').on('editable.afterRemoveImage', function (e, editor) {
+            $(this.root).find('#riot-froala-edit').on('froalaEditor.afterRemoveImage', function (e, editor) {
                 if (opts['content-changed']) {
                     opts['content-changed'](e, editor);
                 }
@@ -111,7 +125,7 @@ riot.tag('riot-froala',' \
                 }
             });
 
-            $(this.root).find('#riot-froala-edit').on('editable.image.resizeEnd', function (e, editor) {
+            $(this.root).find('#riot-froala-edit').on('froalaEditor.image.resizeEnd', function (e, editor) {
                 if (opts['content-changed']) {
                     opts['content-changed'](e, editor);
                 }
@@ -120,36 +134,52 @@ riot.tag('riot-froala',' \
                 }
             });
 
-            $(this.root).find('#riot-froala-edit').on('editable.focus', function (e, editor) {
+            $(this.root).find('#riot-froala-edit').on('froalaEditor.focus', function (e, editor) {
                 self.settingHTML = false;
+            });
+
+            $(this.root).find('#riot-froala-edit').on('froalaEditor.image.beforeUpload', function (e, editor, images) {
+                if (opts['before-upload-image']) {
+                    opts['before-upload-image'](e, editor, images);
+                }
             });
         }
 
         this.getHTML = function() {
             if (self.editor) {
-                var editorHTML = self.editor.getHTML();
+                var editorHTML = self.editor.html.get();
+                var virtualFroalaContentDiv = $('<div />').html(editorHTML);
+
                 if (useRelativeImageWidth) {
                     // parse html into an actual element
-                    var containerWidth = $(this.root).find('#riot-froala-edit .froala-view').width()
+                    var containerWidth = $(this.root).find('#riot-froala-edit .fr-element.fr-view').width()
 
-                    var virtualFroalaContentDiv = $('<div />').html(editorHTML);
                     var virtualFroalaContentImageElements = virtualFroalaContentDiv.find('img');
 
                     // parse images and replace absolute width with relative
-                    virtualFroalaContentImageElements.each(function() {
-                        var absoluteWidthValue = $(this).attr('width');
+                    virtualFroalaContentImageElements.each(function () {
+                        var absoluteWidthValue = $(this).width();
 
-                        if (typeof absoluteWidthValue !== typeof undefined && absoluteWidthValue !== false) {
+                        if (typeof absoluteWidthValue !== typeof undefined && absoluteWidthValue !== false && absoluteWidthValue !== 0) {
 
-                            if (!absoluteWidthValue.endsWith('%')) {
+                            if (!absoluteWidthValue.toString().endsWith('%')) {
                                 var relativeWidthValue = Math.round((absoluteWidthValue / containerWidth) * 100) + '%';
-                                $(this).attr('width', relativeWidthValue);
+                                $(this).width(relativeWidthValue);
                             }
                         }
                     });
-
-                    editorHTML = virtualFroalaContentDiv.html();
                 }
+
+                if (opts['default-link-class']) {
+                    var virtualFroalaContentHrefElements = virtualFroalaContentDiv.find('a');
+
+                    // parse anchor tags and add default style
+                    virtualFroalaContentHrefElements.each(function() {
+                        $(this).addClass(opts['default-link-class']);
+                    });
+                }
+
+                editorHTML = virtualFroalaContentDiv.html();
                 return editorHTML;
             } else {
                 return null;
@@ -159,7 +189,7 @@ riot.tag('riot-froala',' \
         this.setHTML = function(string) {
             if (self.editor) {
                 self.settingHTML = true;
-                self.editor.setHTML(string);
+                self.editor.html.set(string);
             }
         }
 
@@ -174,6 +204,63 @@ riot.tag('riot-froala',' \
         }
         this.setLinkClasses = function(linkClasses) {
             opts['link-classes'] = linkClasses;
+        }
+
+        this.setImageUploadToS3Details = function(imageUploadToS3Details) {
+
+            /*
+            -- required structure for parameter:
+            {
+                 bucket: 'your_bucket_name',
+                 region: 's3',  // or your bucket region
+                 keyStart: 'prefix_to_assign_to_uploaded_files/',
+                 callback: function (url, key) {
+                     // The URL and Key returned from Amazon.
+                     console.log ('*** url = ', url);
+                     console.log ('*** key = ', key);
+                 },
+                 params: {
+                     acl: 'public-read',    // or your required ACL
+                     AWSAccessKeyId: 'your_AWS_Access_Key_ID'
+                     policy: s3Policy,   // see explanation further down
+                     signature: s3Signature   // see explanation further down
+                 }
+             }
+
+             -- the last two parameters should be constructed in the backend, which can be done like so:
+             function generateS3PolicySignatureForFroala() {
+                 let expiration = moment.utc(moment().add(2, 'days')).toISOString();    // set expiration 2 days ahead
+
+                 // build policy object, according to AWS documentation
+                 let s3Policy = {
+                     "expiration": expiration,
+                     "conditions": [
+                         ["starts-with", "$key", consts.AWS_EDITOR_IMAGES_PREFIX],
+                         {"bucket": envUtil.get('AWS_IMAGES_BUCKET_NAME')},
+                         {"acl": "public-read"},
+                         ["starts-with", "$Content-Type", ''],
+                         {"success_action_status": "201"},
+                         {"x-requested-with": "xhr"}
+                     ]
+                 };
+
+                 // stringify and encode the policy
+                 let stringPolicy = JSON.stringify(s3Policy);
+                 let base64Policy = Buffer(stringPolicy, "utf-8").toString("base64");
+
+                 // sign the base64 encoded policy
+                 let signature = crypto.createHmac("sha1", envUtil.get('AWS_SECRET_KEY'))
+                     .update(new Buffer(base64Policy, "utf-8"))
+                     .digest("base64");
+
+                 let s3Credentials = {
+                     s3Policy: base64Policy,
+                     s3Signature: signature
+                 };
+             }
+             */
+
+            opts['image-upload-to-s3-details'] = imageUploadToS3Details;
         }
     }
 ); 

@@ -19,13 +19,14 @@
                     paragraphy="false"
                     height="200"
                     placeholder="Describe how you feel"
-                    buttons="bold italic formatBlock insertUnorderedList createLink insertImage insertVideo"
+                    buttons="bold italic paragraphFormat formatUL insertLink insertImage insertVideo"
                     content-changed="{contentChanged}"
                     content-input="{contentInput}"
                     link-classes="{({'primary-link medium': 'Primary'})}"
                     default-link-class="primary-link medium"
                     block-tags="{({n: 'Normal', h1: 'Title', h2: 'Header'})}"
                     default-image-width="0"
+                    use-relative-image-width="true"
                     value="{htmlContent}"
                 ></riot-froala>
             </div>
@@ -42,7 +43,7 @@
 
             var self = this;
 
-            this.htmlContent = "<h1>Test title</h1><h2>Test header</h2>Blah<br><br>";
+            this.htmlContent = "<h1>Test title</h1><h2>Test header</h2><a href='http://www.google.com'>Blah</a><br><br>";
 
             this.on('mount', function() {
                 this.tags['riot-froala'].init();
