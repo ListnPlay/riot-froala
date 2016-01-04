@@ -206,6 +206,12 @@ riot.tag('riot-froala',' \
             opts['link-classes'] = linkClasses;
         }
 
+        this.focusOnEditor = function() {
+            if (self.editor) {
+                self.editor.events.focus();
+            }
+        }
+
         this.setImageUploadToS3Details = function(imageUploadToS3Details) {
 
             /*
