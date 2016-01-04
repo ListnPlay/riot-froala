@@ -10862,11 +10862,14 @@ riot.tag('riot-froala',' \
 
                     // parse images and replace absolute width with relative
                     virtualFroalaContentImageElements.each(function () {
-                        var absoluteWidthValue = $(this).width();
+                        var absoluteWidthValue = $(this).css('width');
 
-                        if (typeof absoluteWidthValue !== typeof undefined && absoluteWidthValue !== false && absoluteWidthValue !== 0) {
+                        if (typeof absoluteWidthValue !== typeof undefined && absoluteWidthValue !== false && absoluteWidthValue !== 0 && absoluteWidthValue !== '0px') {
 
                             if (!absoluteWidthValue.toString().endsWith('%')) {
+
+                                absoluteWidthValue = absoluteWidthValue.replace(/px$/, '');
+
                                 var relativeWidthValue = Math.round((absoluteWidthValue / containerWidth) * 100) + '%';
                                 $(this).width(relativeWidthValue);
                             }
