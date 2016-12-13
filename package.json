@@ -22,7 +22,7 @@
     "component"
   ],
   "peerDependencies": {
-    "riot": "^2.0.14"
+    "riot": "^3.0.0"
   },
   "author": "Avner Peled",
   "license": "MIT",
