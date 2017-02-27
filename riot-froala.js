@@ -35,7 +35,7 @@ riot.tag('riot-froala',' \
 
             // Options
             var options = {
-                toolbarInline : opts['inline-mode'] || 'true',
+                toolbarInline : opts['inline-mode'] || opts['inlineMode'] || 'true',
                 theme  : opts['theme'] || 'dark',
                 placeholderText : opts['placeholder'] || 'Type something',
                 enter: opts['paragraphy'] || 'true'
@@ -48,14 +48,14 @@ riot.tag('riot-froala',' \
                 options.key  = opts['key']
             }
 
-            if (opts['shortcuts-available']) {
-                options.shortcutsEnabled  = opts['shortcuts-available'].split(/\s+/);
+            if (opts['shortcuts-available'] || opts['shortcutsAvailable']) {
+                options.shortcutsEnabled  = (opts['shortcuts-available'] || opts['shortcutsAvailable']).split(/\s+/);
             }
             if (opts['buttons']) {
                 options.toolbarButtonsXS = options.toolbarButtonsSM = options.toolbarButtonsMD = options.toolbarButtons = opts['buttons'].split(/\s+/);
             }
-            if (opts['block-tags']) {
-                options.paragraphFormat = opts['block-tags'];
+            if (opts['block-tags'] || opts['blockTags']) {
+                options.paragraphFormat = (opts['block-tags'] || opts['blockTags']);
             }
 
             if (opts['width']) {
@@ -65,24 +65,24 @@ riot.tag('riot-froala',' \
                 options.height = opts['height'];
             }
 
-            if (opts['link-classes']) {
-                options.linkStyles = opts['link-classes'];
+            if (opts['link-classes'] || opts['linkClasses']) {
+                options.linkStyles = (opts['link-classes'] || opts['linkClasses']);
             }
 
-            if (opts['default-image-width']) {
-                if (opts['default-image-width'] == '0') {
+            if (opts['default-image-width'] || opts['defaultImageWidth']) {
+                if ((opts['default-image-width'] || opts['defaultImageWidth']) == '0') {
                     options.imageDefaultWidth = 0;  // must be integer, '0' displays all images as 0px, instead of using the actual image width
                 }
                 else {
-                    options.imageDefaultWidth = opts['default-image-width'];
+                    options.imageDefaultWidth = (opts['default-image-width'] || opts['defaultImageWidth']);
                 }
             }
 
-            if (opts['image-upload-to-s3-details']) {
-                options.imageUploadToS3 = opts['image-upload-to-s3-details'];
+            if (opts['image-upload-to-s3-details'] || opts['imageUploadToS3Details']) {
+                options.imageUploadToS3 = (opts['image-upload-to-s3-details'] || opts['imageUploadToS3Details']);
             }
 
-            if (opts['use-relative-image-width'] && opts['use-relative-image-width'].toLowerCase() == 'true') {
+            if ((opts['use-relative-image-width'] || opts['useRelativeImageWidth']) && (opts['use-relative-image-width'] || opts['useRelativeImageWidth']).toLowerCase() == 'true') {
                 useRelativeImageWidth = true;
             }
 
@@ -90,7 +90,7 @@ riot.tag('riot-froala',' \
                 self.editor = editor;
                 self.initialized = true;
 
-                if (opts['default-link-class']) {
+                if (opts['default-link-class'] || opts['defaultLinkClass']) {
                     // todo: hide style selection button in the link popup
 
                     // the following doesn't work because the buttons popup is only created/added to the DOM after the first time it's displayed, and not once the editor is initialized
@@ -107,30 +107,30 @@ riot.tag('riot-froala',' \
                 if (opts['value']) {
                     opts['value'] = self.getHTML();
                 }
-                if (opts['content-changed']) {
-                    opts['content-changed'](e, editor);
+                if (opts['content-changed'] || opts['contentChanged']) {
+                    (opts['content-changed'] || opts['contentChanged'])(e, editor);
                 }
-                if (!self.settingHTML && opts['content-input']) {
-                    opts['content-input'](e, editor);
+                if (!self.settingHTML && (opts['content-input'] || opts['contentInput'])) {
+                    (opts['content-input'] || opts['contentInput'])(e, editor);
                 }
                 self.settingHTML = false;
             });
 
             $(this.root).find('#riot-froala-edit').on('froalaEditor.afterRemoveImage', function (e, editor) {
-                if (opts['content-changed']) {
-                    opts['content-changed'](e, editor);
+                if (opts['content-changed'] || opts['contentChanged']) {
+                    (opts['content-changed'] || opts['contentChanged'])(e, editor);
                 }
-                if (opts['content-input']) {
-                    opts['content-input'](e, editor);
+                if (opts['content-input'] || opts['contentInput']) {
+                    (opts['content-input'] || opts['contentInput'])(e, editor);
                 }
             });
 
             $(this.root).find('#riot-froala-edit').on('froalaEditor.image.resizeEnd', function (e, editor) {
-                if (opts['content-changed']) {
-                    opts['content-changed'](e, editor);
+                if (opts['content-changed'] || opts['contentChanged']) {
+                    (opts['content-changed'] || opts['contentChanged'])(e, editor);
                 }
-                if (opts['content-input']) {
-                    opts['content-input'](e, editor);
+                if (opts['content-input'] || opts['contentInput']) {
+                    (opts['content-input'] || opts['contentInput'])(e, editor);
                 }
             });
 
@@ -139,8 +139,8 @@ riot.tag('riot-froala',' \
             });
 
             $(this.root).find('#riot-froala-edit').on('froalaEditor.image.beforeUpload', function (e, editor, images) {
-                if (opts['before-upload-image']) {
-                    opts['before-upload-image'](e, editor, images);
+                if (opts['before-upload-image'] || opts['beforeUploadImage']) {
+                    (opts['before-upload-image'] || opts['beforeUploadImage'])(e, editor, images);
                 }
             });
         }
@@ -173,12 +173,12 @@ riot.tag('riot-froala',' \
                     });
                 }
 
-                if (opts['default-link-class']) {
+                if (opts['default-link-class'] || opts['defaultLinkClass']) {
                     var virtualFroalaContentHrefElements = virtualFroalaContentDiv.find('a');
 
                     // parse anchor tags and add default style
                     virtualFroalaContentHrefElements.each(function() {
-                        $(this).addClass(opts['default-link-class']);
+                        $(this).addClass(opts['default-link-class'] || opts['defaultLinkClass']);
                     });
                 }
 
