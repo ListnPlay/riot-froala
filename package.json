@@ -21,7 +21,7 @@
     "riotjs",
     "component"
   ],
-  "peerDependencies": {
+  "optionalDependencies": {
     "riot": "^3.0.0"
   },
   "author": "Avner Peled",
